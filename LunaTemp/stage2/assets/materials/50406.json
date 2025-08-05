@@ -1,0 +1,1 @@
+{"id":50406,"path":"Assets/_HoleMoney/ShaderGraph/Fill.mat","assetBundleId":-1,"data":["Fill",0,50408,2000,0,[["_Fillpercent",2.69000005722046],["_Edge_Width",-0.100000001490116],["_MeshHeight",1],["_BUILTIN_QueueOffset",0],["_BUILTIN_QueueControl",0]],[["_OffColor",0,0,0,0],["_Edge_color",0,0.719892263412476,1,0]],[["_Texture2D_ST",1,1,0,0]],[["_Texture2D",19,49808]],[]]}

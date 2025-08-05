@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20201a2af0744aa49fe787d5bc022c14, type: 3}
+  m_Name: levelDesigner
+  m_EditorClassIdentifier: 
+  mapLevel:
+  - {fileID: 0}
+  - {fileID: 4900000, guid: 57df3aa066190344ba23e87c8cd15ed9, type: 3}
+  - {fileID: 4900000, guid: bea440b89b6261440abd6b1a96800bf9, type: 3}
+  - {fileID: 4900000, guid: 0e75c6880110838469763d3c0aa299c8, type: 3}
+  - {fileID: 4900000, guid: 1955fd6f1b7f78c45b15683999084bac, type: 3}
+  - {fileID: 4900000, guid: 190ffa0fe5af65143b79a0ac0ada325d, type: 3}
+  - {fileID: 4900000, guid: 82800efe9ea0dc34194592c8febb95e9, type: 3}
+  - {fileID: 4900000, guid: d97dbf35564afcd4abe6e3900839f324, type: 3}
+  - {fileID: 4900000, guid: c2183188e5a8e9144804de079fce8b6e, type: 3}
+  - {fileID: 4900000, guid: 4ad2e416d01a7234ea1d6a378fdb555e, type: 3}
+  - {fileID: 4900000, guid: 7196f7ffc0916694fa361364822712d0, type: 3}
+  - {fileID: 4900000, guid: 51ebb17632791b64397897c8294fae0a, type: 3}
+  - {fileID: 4900000, guid: 6f142d9b8c8693448b6c9519d81491cb, type: 3}
+  - {fileID: 4900000, guid: 44af8efc7baf3ec4dbb687539e615e91, type: 3}
+  - {fileID: 4900000, guid: 3deb2ce7be9a310458497d8e281c2cea, type: 3}
+  - {fileID: 4900000, guid: 4e89ca3814d2932479636bc7f5be2d51, type: 3}
+  - {fileID: 4900000, guid: 7e3f0f8e1a2427f4ea9256893b81c8f4, type: 3}
+  - {fileID: 4900000, guid: 0b480a49c8f9f414bbb0ead1dc7c2cf9, type: 3}
+  - {fileID: 4900000, guid: 4bd0a4820f6275348994aede404d84a8, type: 3}
+  - {fileID: 4900000, guid: 82d0b4683e6250d4f9f11d3dadc29e22, type: 3}
+  - {fileID: 4900000, guid: 2b0b14f7c31d4c94f95f8c8ddc763c72, type: 3}
+  - {fileID: 4900000, guid: 44be1f7ec6b690d4887a29607556575a, type: 3}
+  - {fileID: 4900000, guid: 3b336d9e39b818c4494ae6d9d806bbac, type: 3}
+  - {fileID: 4900000, guid: c4f4b0cdfd345934ab3ace96fd6137ef, type: 3}
+  - {fileID: 4900000, guid: 93bd431b82ac01743851c6e0f2ddff6f, type: 3}
+  - {fileID: 4900000, guid: 256d217cd42b91044a031114a3424924, type: 3}
+  - {fileID: 4900000, guid: 4f8c93d2c14830d48be658eba29bbe5f, type: 3}
+  pigLevel:
+  - {fileID: 0}
+  - {fileID: 4900000, guid: 1e200ad6c767be043a78ddc3d380b32f, type: 3}
+  - {fileID: 4900000, guid: b96e1fc7b57732242ad229152946d0b3, type: 3}
+  - {fileID: 4900000, guid: 25d46b96c5a7a374a92a9b5be8eb53d5, type: 3}
+  - {fileID: 4900000, guid: 459ec252b7c23d542a48358acd3a6e32, type: 3}
+  - {fileID: 4900000, guid: 919db5b8e8585a64b84507d9572a5f49, type: 3}
+  - {fileID: 4900000, guid: a88edc3c836681f44b79c96983658dd9, type: 3}
+  - {fileID: 4900000, guid: 7f15cf3bcde131e4e836a233a245c473, type: 3}
+  - {fileID: 4900000, guid: f386c1e070f84b94fa604bacd6327af8, type: 3}
+  - {fileID: 4900000, guid: 1b0acfd45370856408ee1dccfb6f55fe, type: 3}
+  - {fileID: 4900000, guid: 13df24e55062aea44aa3c3da3729dba5, type: 3}
+  - {fileID: 4900000, guid: bae849c89401b5047b94f852fea32ec7, type: 3}
+  - {fileID: 4900000, guid: ecdef30b51826ff4fb5f8df61a4e141a, type: 3}
+  - {fileID: 4900000, guid: 60a326e666647cb4e8222d683d6cee1c, type: 3}
+  - {fileID: 4900000, guid: e9c8edb209dd1d54ab98ceae0a2ea724, type: 3}
+  - {fileID: 4900000, guid: 5cc3a85b45bcca344b44e70d6442bb72, type: 3}
+  - {fileID: 4900000, guid: 04b8f93ab2469184bbcbbe456571a901, type: 3}
+  - {fileID: 4900000, guid: c9c0d3f5dcef4d543a989cdc03c85458, type: 3}
+  - {fileID: 4900000, guid: ba72597c5e14e5c42a4d7783667e7e32, type: 3}
+  - {fileID: 4900000, guid: 45128898bf3602344b70b11c9141aaf3, type: 3}
+  - {fileID: 4900000, guid: ffafff49aecaa364297d4daad842b486, type: 3}
+  - {fileID: 4900000, guid: 366698381f5aa9246aee235e19ca0b73, type: 3}
+  - {fileID: 4900000, guid: 4d5abf8804e45c740900dfe87cc85460, type: 3}
+  - {fileID: 4900000, guid: 2cc01286fdfe4f5498819819b0d7dc90, type: 3}
+  - {fileID: 4900000, guid: 94053bebcb390134a82a18bf0bfdf7dd, type: 3}
+  - {fileID: 4900000, guid: e6d1294d0347d11499c5c04e24e6d9f5, type: 3}
+  - {fileID: 4900000, guid: 60c19fb9f0919a64587692cee0287ef3, type: 3}
+  rewardPerLevel:
+  - numberOfSLots: 4
+    coinReward: 0
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 2
+    coinReward: 10
+  - numberOfSLots: 2
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10
+  - numberOfSLots: 4
+    coinReward: 10

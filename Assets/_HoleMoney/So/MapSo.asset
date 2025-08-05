@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c6d3955dfc0462d8279a895738a084a, type: 3}
+  m_Name: MapSo
+  m_EditorClassIdentifier: 
+  islands:
+  - islandID: 1
+    islandName: 
+    islandPrefab: {fileID: 710985371444635906, guid: 7d7c0bd7656a38c47a6bb6ec2787bc1b, type: 3}
+    towers:
+    - towerID: 1
+    - towerID: 2
+    - towerID: 3
+  - islandID: 2
+    islandName: 
+    islandPrefab: {fileID: 710985371444635906, guid: c08c66cca801925429723abd3b2f21be, type: 3}
+    towers:
+    - towerID: 1
+    - towerID: 2
+    - towerID: 3

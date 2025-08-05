@@ -1,0 +1,20 @@
+{
+  "pig 1": {
+    "1": "DarkBlue",
+    "2": "DarkBlue",
+    "3": "DarkBlue",
+    "4": "DarkBlue"
+  },
+  "pig 2": {
+    "1": "Orange",
+    "2": "Orange",
+    "3": "Orange",
+    "4": "Yellow"
+  },
+  "pig 3": {
+    "1": "Yellow",
+    "2": "Yellow",
+    "3": "Yellow",
+    "4": "DarkBlue"
+  }
+}

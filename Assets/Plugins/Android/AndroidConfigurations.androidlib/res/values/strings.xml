@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="FacebookAppID" translatable="false">713466558135136</string>
+  <string name="FacebookDisplayName" translatable="false">Hole Coin Puzzle Game</string>
+  <string name="FacebookClientToken" translatable="false">f3510e235d38b1377f620009ec3d5f6e</string>
+  <string name="FacebookAutoLogEvents" translatable="false">false</string>
+</resources>

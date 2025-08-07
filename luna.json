@@ -130,14 +130,9 @@
             ]
         },
         "scenes": [
-            "Assets/_HoleMoney/Scenes/PlayableScene.unity"
+            "Assets/Playable/PlayableScene.unity"
         ],
-        "disabledScenes": [
-            "Assets/_HoleMoney/Scenes/Build_Scene.unity",
-            "Assets/_HoleMoney/Scenes/Game_Home.unity",
-            "Assets/_HoleMoney/Scenes/Game_Scene.unity",
-            "Assets/_HoleMoney/Scenes/LoadingScene.unity"
-        ],
+        "disabledScenes": [],
         "startupScene": 0,
         "packages": {
             "default": {

@@ -1,1 +1,1 @@
-{"0":{"id":0,"name":"78172c3c5d620a1d32b6d0141aa68a51.bundle","dependencies":[1,-2]},"-1":{"id":-1,"name":"$Main","dependencies":[0,1,-2]},"-2":{"id":-2,"name":"$Builtin","dependencies":[]}}
+{"0":{"id":0,"name":"78172c3c5d620a1d32b6d0141aa68a51.bundle","dependencies":[1,-2]},"-1":{"id":-1,"name":"$Main","dependencies":[-2]},"-2":{"id":-2,"name":"$Builtin","dependencies":[]}}

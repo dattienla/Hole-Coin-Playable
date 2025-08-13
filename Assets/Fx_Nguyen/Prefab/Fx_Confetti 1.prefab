@@ -24457,7 +24457,7 @@ GameObject:
   - component: {fileID: 2150181551133991575}
   - component: {fileID: 3362027312234839564}
   - component: {fileID: 4342056362820697156}
-  - component: {fileID: 4825379805769943471}
+  - component: {fileID: 6028005891617013989}
   m_Layer: 0
   m_Name: Fx_Confetti 1
   m_TagString: Untagged
@@ -29278,7 +29278,7 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &4825379805769943471
+--- !u!114 &6028005891617013989
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -29287,7 +29287,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8947239850544558796}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21ee8ed3075047cfa4e8b25cf22b64a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 57034a1e9dc2a6140a7781d7a015618d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lifeTime: 2

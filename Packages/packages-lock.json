@@ -84,6 +84,13 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.2.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "com.unity.performance.profile-analyzer": {
       "version": "1.2.2",
       "depth": 1,
@@ -193,7 +200,7 @@
       "hash": "f2c6cb09817832dccd0600f291053d8d55298ee9"
     },
     "uk.lunalabs.luna": {
-      "version": "file:C:/Users/admin/Downloads/scripts",
+      "version": "file:../../scripts",
       "depth": 0,
       "source": "local",
       "dependencies": {}

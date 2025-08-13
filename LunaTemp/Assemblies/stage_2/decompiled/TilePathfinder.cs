@@ -5,12 +5,19 @@ public class TilePathfinder : MonoBehaviour
 {
 	public static TilePathfinder Instance;
 
+	private List<Tile> allTiles = new List<Tile>();
+
 	private void Awake()
 	{
 		Instance = this;
 	}
 
-	public List<Tile> FindShortestPath(Tile start, Tile target)
+	private void Start()
+	{
+		allTiles = GamePlay.Instance.GetAllTilesInGrid();
+	}
+
+	public List<Tile> FindShortestPath(Tile start, Tile target, Hole hole)
 	{
 		if (start == target)
 		{
@@ -22,21 +29,25 @@ public class TilePathfinder : MonoBehaviour
 		queue.Enqueue(start);
 		cameFrom[start] = null;
 		visited.Add(start);
-		Color startColor = start.GetColorTile();
-		while (queue.Count > 0)
+		ColorType startColorType = start.GetColorTile();
+		ColorType holeType = hole.colorType;
+		if (startColorType == holeType)
 		{
-			Tile current = queue.Dequeue();
-			if (current == target)
+			while (queue.Count > 0)
 			{
-				return ReconstructPath(cameFrom, target);
-			}
-			foreach (Tile neighbor in current.GetNeighbors())
-			{
-				if (!visited.Contains(neighbor) && (neighbor.isEmpty || (!neighbor.isEmpty && neighbor.GetColorTile() == startColor)))
+				Tile current = queue.Dequeue();
+				if (current == target)
 				{
-					queue.Enqueue(neighbor);
-					visited.Add(neighbor);
-					cameFrom[neighbor] = current;
+					return ReconstructPath(cameFrom, target);
+				}
+				foreach (Tile neighbor in current.GetNeighbors())
+				{
+					if ((allTiles.Contains(neighbor) || hole.tilesInHole.Contains(neighbor)) && !visited.Contains(neighbor) && (neighbor.isEmpty || (!neighbor.isEmpty && neighbor.GetColorTile() == startColorType)))
+					{
+						queue.Enqueue(neighbor);
+						visited.Add(neighbor);
+						cameFrom[neighbor] = current;
+					}
 				}
 			}
 		}

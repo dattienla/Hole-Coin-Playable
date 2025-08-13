@@ -5,49 +5,57 @@ using UnityEngine;
 public class TilePathfinder : MonoBehaviour
 {
     public static TilePathfinder Instance;
+    List<Tile> allTiles = new List<Tile>();
     private void Awake()
     {
         Instance = this;
     }
-    public List<Tile> FindShortestPath(Tile start, Tile target)
+    private void Start()
+    {
+        allTiles = GamePlay.Instance.GetAllTilesInGrid();
+    }
+    public List<Tile> FindShortestPath(Tile start, Tile target, Hole hole)
     {
         if (start == target) return new List<Tile> { start };
-
         Queue<Tile> queue = new Queue<Tile>();
         Dictionary<Tile, Tile> cameFrom = new Dictionary<Tile, Tile>();
         HashSet<Tile> visited = new HashSet<Tile>();
-
         queue.Enqueue(start);
         cameFrom[start] = null;
         visited.Add(start);
 
-        Color startColor = start.GetColorTile();
-
-        while (queue.Count > 0)
+        ColorType startColorType = start.GetColorTile();
+        ColorType holeType = hole.colorType;
+        if (startColorType == holeType)
         {
-            Tile current = queue.Dequeue();
-
-            if (current == target)
+            while (queue.Count > 0)
             {
-                return ReconstructPath(cameFrom, target);
-            }
+                Tile current = queue.Dequeue();
 
-            foreach (Tile neighbor in current.GetNeighbors())
-            {
-                if (visited.Contains(neighbor)) continue;
+                if (current == target)
+                {
+                    return ReconstructPath(cameFrom, target);
+                }
 
-                bool isPassable =
-                    neighbor.isEmpty ||
-                    (!neighbor.isEmpty && neighbor.GetColorTile() == startColor);
+                foreach (Tile neighbor in current.GetNeighbors())
+                {
+                    if (!allTiles.Contains(neighbor))
+                    {
+                        if (!hole.tilesInHole.Contains(neighbor)) continue;
+                    }
+                    if (visited.Contains(neighbor)) continue;
 
-                if (!isPassable) continue;
+                    bool isPassable =
+                        neighbor.isEmpty ||
+                        (!neighbor.isEmpty && neighbor.GetColorTile() == startColorType);
+                    if (!isPassable) continue;
 
-                queue.Enqueue(neighbor);
-                visited.Add(neighbor);
-                cameFrom[neighbor] = current;
+                    queue.Enqueue(neighbor);
+                    visited.Add(neighbor);
+                    cameFrom[neighbor] = current;
+                }
             }
         }
-
         // Không tìm được đường đi hợp lệ
         return null;
     }

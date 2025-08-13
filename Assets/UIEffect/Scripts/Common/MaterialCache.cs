@@ -43,7 +43,7 @@ namespace Coffee.UIEffects
         public static Material Register(Material baseMaterial, Hash128 hash,
             System.Action<Material, Graphic> onModifyMaterial, Graphic graphic)
         {
-            if (!hash.isValid) return null;
+            if (hash.Equals(default(Hash128))) return null;
 
             MaterialEntry entry;
             if (!materialMap.TryGetValue(hash, out entry))
@@ -67,8 +67,9 @@ namespace Coffee.UIEffects
         public static void Unregister(Hash128 hash)
         {
             MaterialEntry entry;
-            if (!hash.isValid || !materialMap.TryGetValue(hash, out entry)) return;
+            if (hash.Equals(default(Hash128)) || !materialMap.TryGetValue(hash, out entry)) return;
             if (--entry.referenceCount > 0) return;
+
 
             entry.Release();
             materialMap.Remove(hash);

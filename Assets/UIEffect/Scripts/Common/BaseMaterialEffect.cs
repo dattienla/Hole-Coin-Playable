@@ -63,7 +63,7 @@ namespace Coffee.UIEffects
             var oldHash = _effectMaterialHash;
             _effectMaterialHash = GetMaterialHash(baseMaterial);
             var modifiedMaterial = baseMaterial;
-            if (_effectMaterialHash.isValid)
+            if (!_effectMaterialHash.Equals(default(Hash128)))
             {
                 modifiedMaterial = MaterialCache.Register(baseMaterial, _effectMaterialHash, ModifyMaterial, graphic);
             }
@@ -87,7 +87,7 @@ namespace Coffee.UIEffects
         protected void SetShaderVariants(Material newMaterial, params object[] variants)
         {
             // Set shader keywords as variants
-            var keywords = variants.Where(x => 0 < (int) x)
+            var keywords = variants.Where(x => 0 < (int)x)
                 .Select(x => x.ToString().ToUpper())
                 .Concat(newMaterial.shaderKeywords)
                 .Distinct()
@@ -96,7 +96,7 @@ namespace Coffee.UIEffects
 
             // Add variant name
             s_StringBuilder.Length = 0;
-            s_StringBuilder.Append(Path.GetFileName(newMaterial.shader.name));
+            // s_StringBuilder.Append(Path.GetFileName(newMaterial.shader.name));
             foreach (var keyword in keywords)
             {
                 s_StringBuilder.Append("-");

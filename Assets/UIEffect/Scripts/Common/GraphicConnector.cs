@@ -49,7 +49,7 @@ namespace Coffee.UIEffects
         }
 
         /// <summary>
-        /// Connector priority.
+        /// Connector priority.s
         /// </summary>
         protected virtual int priority
         {

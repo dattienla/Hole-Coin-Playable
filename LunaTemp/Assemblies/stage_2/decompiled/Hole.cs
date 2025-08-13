@@ -1,17 +1,23 @@
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Hole : MonoBehaviour
 {
-	public Color colorType;
+	public ColorType colorType;
+
+	public Transform pointToDropCoin;
+
+	public bool canClick = true;
+
+	[FormerlySerializedAs("meshRenderer")]
+	public SkinnedMeshRenderer skinnedMeshRenderer;
+
+	public List<Tile> tilesInHole = new List<Tile>();
 
 	public List<Tile> targetTiles = new List<Tile>();
-
-	private void Start()
-	{
-		colorType = GetColorHole();
-	}
 
 	private void Update()
 	{
@@ -22,50 +28,58 @@ public class Hole : MonoBehaviour
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		if (Physics.Raycast(ray, out var hit) && hit.collider.transform == base.transform)
 		{
-			base.transform.DOScale(2.3f, 0.1f).OnComplete(delegate
+			base.transform.DOScale(1.8f, 0.1f).OnComplete(delegate
 			{
-				base.transform.DOScale(2.5f, 0.05f);
+				base.transform.DOScale(2f, 0.05f);
 			});
-			MoveCoin();
+			if (canClick)
+			{
+				GamePlay.Instance.StartHoleMoneyGame(this);
+			}
 		}
 	}
 
-	public Color GetColorHole()
+	public void ActivateBlenderShape(int delayMs)
 	{
-		Transform hole = base.transform.Find("coinColor");
-		if (hole != null)
-		{
-			Renderer r = hole.GetComponent<Renderer>();
-			if (r != null)
-			{
-				return r.material.color;
-			}
-		}
-		return Color.clear;
+		StartCoroutine(ActivateBlenderShapeRoutine(delayMs));
 	}
 
-	public void MoveCoin()
+	private IEnumerator ActivateBlenderShapeRoutine(int delayMs)
 	{
-		foreach (Tile startTile in GetAllTilesInGrid())
+		yield return new WaitForSeconds((float)delayMs / 1000f);
+		if (!(skinnedMeshRenderer == null))
 		{
-			List<Tile> path = TilePathfinder.Instance.FindShortestPath(startTile, targetTiles[0]);
-			Coin coin = startTile.childCoin;
-			if (path != null)
+			skinnedMeshRenderer.SetBlendShapeWeight(0, 0f);
+			float weight = skinnedMeshRenderer.GetBlendShapeWeight(0);
+			DOTween.To(() => weight, delegate(float x)
 			{
-				GamePlay.Instance.MoveAlongTiles(coin, path);
-			}
+				skinnedMeshRenderer.SetBlendShapeWeight(0, x);
+			}, 100f, 0.25f).SetEase(Ease.InBack).OnComplete(delegate
+			{
+				skinnedMeshRenderer.SetBlendShapeWeight(0, 100f);
+			});
 		}
-		List<Tile> GetAllTilesInGrid()
+	}
+
+	public void DeactivateBlenderShape(int delayMs)
+	{
+		StartCoroutine(DeactivateBlenderShapeRoutine(delayMs));
+	}
+
+	private IEnumerator DeactivateBlenderShapeRoutine(int delayMs)
+	{
+		yield return new WaitForSeconds((float)delayMs / 1000f);
+		if (!(skinnedMeshRenderer == null))
 		{
-			List<Tile> result = new List<Tile>();
-			foreach (Row row in Grid.instance.rows)
+			skinnedMeshRenderer.SetBlendShapeWeight(0, 100f);
+			float weight = skinnedMeshRenderer.GetBlendShapeWeight(0);
+			DOTween.To(() => weight, delegate(float x)
 			{
-				foreach (Tile tile in row.tiles)
-				{
-					result.Add(tile);
-				}
-			}
-			return result;
+				skinnedMeshRenderer.SetBlendShapeWeight(0, x);
+			}, 0f, 0.25f).SetEase(Ease.InBack).OnComplete(delegate
+			{
+				skinnedMeshRenderer.SetBlendShapeWeight(0, 0f);
+			});
 		}
 	}
 }

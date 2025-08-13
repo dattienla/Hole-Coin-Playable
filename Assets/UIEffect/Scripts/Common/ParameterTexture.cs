@@ -54,7 +54,7 @@ namespace Coffee.UIEffects
             if (target.parameterIndex <= 0 && 0 < _stack.Count)
             {
                 target.parameterIndex = _stack.Pop();
-//				Debug.LogFormat("<color=green>@@@ Register {0} : {1}</color>", target, target.parameterIndex);
+                //				Debug.LogFormat("<color=green>@@@ Register {0} : {1}</color>", target, target.parameterIndex);
             }
         }
 
@@ -66,7 +66,7 @@ namespace Coffee.UIEffects
         {
             if (0 < target.parameterIndex)
             {
-//				Debug.LogFormat("<color=red>@@@ Unregister {0} : {1}</color>", target, target.parameterIndex);
+                //				Debug.LogFormat("<color=red>@@@ Unregister {0} : {1}</color>", target, target.parameterIndex);
                 _stack.Push(target.parameterIndex);
                 target.parameterIndex = 0;
             }
@@ -96,7 +96,7 @@ namespace Coffee.UIEffects
         /// <param name="value">Value.</param>
         public void SetData(IParameterTexture target, int channelId, float value)
         {
-            SetData(target, channelId, (byte) (Mathf.Clamp01(value) * 255));
+            SetData(target, channelId, (byte)(Mathf.Clamp01(value) * 255));
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace Coffee.UIEffects
         /// <param name="target">Target.</param>
         public float GetNormalizedIndex(IParameterTexture target)
         {
-            return ((float) target.parameterIndex - 0.5f) / _instanceLimit;
+            return ((float)target.parameterIndex - 0.5f) / _instanceLimit;
         }
 
 
@@ -182,9 +182,11 @@ namespace Coffee.UIEffects
             if (_needUpload && _texture)
             {
                 _needUpload = false;
-                _texture.LoadRawTextureData(_data);
+                _texture.LoadImage(_data); // _data là byte[] ảnh PNG/JPG
                 _texture.Apply(false, false);
             }
+
+
         }
     }
 }

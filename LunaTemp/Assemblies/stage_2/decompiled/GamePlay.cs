@@ -14,16 +14,13 @@ public class GamePlay : MonoBehaviour
 
 	private readonly Dictionary<ColorType, int> tempCoins = new Dictionary<ColorType, int>();
 
+	private int countCoin = 0;
+
 	private void Awake()
 	{
-		DOTween.Init();
+		Instance = this;
 		Application.targetFrameRate = 60;
 		QualitySettings.vSyncCount = 0;
-		Instance = this;
-	}
-
-	private void Update()
-	{
 	}
 
 	private void StartSetTrueCanClickHole(Hole hole)
@@ -51,44 +48,46 @@ public class GamePlay : MonoBehaviour
 		foreach (Tile tile in GetAllTilesInGrid())
 		{
 			List<Tile> path = TilePathfinder.Instance.FindShortestPath(tile, hole.targetTiles[UnityEngine.Random.Range(0, 7)], hole);
-			if (path == null)
+			if (path != null)
 			{
-				continue;
-			}
-			hole.canClick = false;
-			GameObject obj = tile.childCoin;
-			Coin coin = obj.GetComponent<Coin>();
-			Debug.Log("11đsấdsa");
-			MoveAlongTiles(coin, path, delegate
-			{
-				Debug.Log("2");
-				coin.JumpToHole(hole.pointToDropCoin, delegate
+				countCoin++;
+				hole.canClick = false;
+				GameObject obj = tile.childCoin;
+				Coin coin = obj.GetComponent<Coin>();
+				MoveAlongTile(coin, path, delegate
 				{
-					StartSetTrueCanClickHole(hole);
+					OnCoinMoveComplete(coin, hole, ref isHoleActive);
 				});
-				if (isHoleActive)
-				{
-					hole.ActivateBlenderShape(800);
-					hole.transform.DOScale(2.4f, 0.5f).SetEase(Ease.OutBack).OnComplete(delegate
-					{
-						hole.transform.DOScale(2f, 0.5f).SetEase(Ease.OutBack);
-					});
-					hole.DeactivateBlenderShape(1000);
-					DropCoins(hole, coin.colorType);
-				}
-				isHoleActive = false;
-			});
+			}
 		}
 		yield return new WaitForSeconds(0.001f);
 	}
 
-	public void MoveAlongTiles(Coin coin, IEnumerable<Tile> path, Action onComplete = null)
+	private void OnCoinMoveComplete(Coin coin, Hole hole, ref bool isHoleActive)
 	{
-		Debug.Log("111111");
-		StartCoroutine(MoveStepByStep(coin, path, onComplete));
+		coin.JumpToHole(hole.pointToDropCoin, delegate
+		{
+			StartSetTrueCanClickHole(hole);
+		});
+		if (isHoleActive)
+		{
+			hole.ActivateBlenderShape(800);
+			hole.transform.DOScale(2.4f, 0.5f).SetEase(Ease.OutBack).OnComplete(delegate
+			{
+				hole.transform.DOScale(2f, 0.5f).SetEase(Ease.OutBack);
+			});
+			hole.DeactivateBlenderShape(1000);
+			DropCoin(hole, coin.colorType);
+		}
+		isHoleActive = false;
 	}
 
-	private IEnumerator MoveStepByStep(Coin coin, IEnumerable<Tile> path, Action onComplete = null)
+	public void MoveAlongTile(Coin coin, List<Tile> path, Action onComplete = null)
+	{
+		StartCoroutine(MoveStepBySteps(coin, path, onComplete));
+	}
+
+	public IEnumerator MoveStepBySteps(Coin coin, List<Tile> path, Action onComplete = null)
 	{
 		foreach (Tile tile in path)
 		{
@@ -110,7 +109,7 @@ public class GamePlay : MonoBehaviour
 			});
 			yield return new WaitUntil(() => moveDone);
 		}
-		yield return new WaitForSeconds(UnityEngine.Random.Range(0.1f, 0.2f));
+		yield return new WaitForSeconds(UnityEngine.Random.Range(0f, 0f));
 		onComplete?.Invoke();
 	}
 
@@ -137,7 +136,7 @@ public class GamePlay : MonoBehaviour
 		return result;
 	}
 
-	public void DropCoins(Hole hole, ColorType col)
+	public void DropCoin(Hole hole, ColorType col)
 	{
 		Pig pig = null;
 		foreach (Pig p in pigs)
@@ -154,6 +153,11 @@ public class GamePlay : MonoBehaviour
 		{
 			float delay = (float)i * 0.05f;
 			pig.DropDelay(delay, col);
+		}
+		if (countCoin == GetAllTilesInGrid().Count)
+		{
+			PlayableManager.Instance.WinGame();
+			countCoin = 0;
 		}
 		pig.OnFullDelay();
 	}

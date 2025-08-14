@@ -28,6 +28,8 @@ public class Hole : MonoBehaviour
                 {
                     transform.DOScale(1.8f, 0.1f)
                      .OnComplete(() => transform.DOScale(2f, 0.05f));
+                    Debug.Log("111");
+                    Debug.Log(GamePlay.Instance);
                     if (canClick)
                         GamePlay.Instance.StartHoleMoneyGame(this);
 

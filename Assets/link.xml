@@ -1,0 +1,30 @@
+<linker>
+  <!-- Giữ toàn bộ code game (Assembly-CSharp) -->
+  <assembly fullname="Assembly-CSharp">
+    <type fullname="*" preserve="all"/>
+  </assembly>
+
+  <!-- Giữ toàn bộ code DOTween -->
+  <assembly fullname="DOTween">
+    <type fullname="*" preserve="all"/>
+  </assembly>
+
+  <!-- Giữ toàn bộ code DOTween Modules -->
+  <assembly fullname="DOTween.Modules">
+    <type fullname="*" preserve="all"/>
+  </assembly>
+
+  <!-- Giữ toàn bộ code của Luna / PlayWorks SDK -->
+  <assembly fullname="LunaPlayworks">
+    <type fullname="*" preserve="all"/>
+  </assembly>
+
+  <!-- Giữ toàn bộ code của các plugin khác -->
+  <assembly fullname="UnityEngine">
+    <type fullname="*" preserve="all"/>
+  </assembly>
+  <assembly fullname="UnityEngine.CoreModule">
+    <type fullname="*" preserve="all"/>
+  </assembly>
+</linker>
+

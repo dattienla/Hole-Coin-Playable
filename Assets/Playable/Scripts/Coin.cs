@@ -34,7 +34,6 @@ public class Coin : MonoBehaviour
 
         var jumpPower = Random.Range(7.5f, 10f);
         var duration = Random.Range(0.6f, 1f);
-
         transform.DOJump(end, jumpPower, 1, duration)
             .SetEase(Ease.Linear)
             .OnComplete(() =>

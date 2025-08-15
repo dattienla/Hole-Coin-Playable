@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.UI;
 using UnityEngine.Scripting;
 public class GamePlay : MonoBehaviour
 {
@@ -12,10 +13,11 @@ public class GamePlay : MonoBehaviour
 
     public List<Hole> holes = new List<Hole>();
 
-    public List<Pig> pigs = new List<Pig>();
+    public List<PigRow> rowPig = new List<PigRow>();
 
     private readonly Dictionary<ColorType, int> tempCoins = new();
     private int countCoin = 0;
+    private int coinInBag = 0;
     private void Awake()
     {
         Instance = this;
@@ -30,7 +32,7 @@ public class GamePlay : MonoBehaviour
 
     private IEnumerator SetTrueCanClickHole(Hole hole)
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.1f);
         hole.canClick = true;
     }
 
@@ -40,42 +42,43 @@ public class GamePlay : MonoBehaviour
     }
     private IEnumerator ProcessHole(Hole hole)
     {
-        bool isHoleActive = true;
+        coinInBag = 0;
+        hole.isHoleActive = false;
         foreach (var tile in GetAllTilesInGrid())
         {
-            List<Tile> path = TilePathfinder.Instance.FindShortestPath(tile, hole.targetTiles[UnityEngine.Random.Range(0, 7)], hole);
+            List<Tile> path = TilePathfinder.Instance.FindShortestPath(tile, hole.targetTiles[UnityEngine.Random.Range(0, 3)], hole);
             if (path != null)
             {
+                coinInBag++;
                 PlayableManager.Instance.hand.SetActive(false);
+                holes[0].canClick = true;
                 countCoin++;
                 hole.canClick = false;
                 GameObject obj = tile.childCoin;
                 Coin coin = obj.GetComponent<Coin>();
-                MoveAlongTile(coin, path, () => OnCoinMoveComplete(coin, hole, ref isHoleActive));
+                MoveAlongTile(coin, path, () => OnCoinMoveComplete(coin, hole));
             }
         }
+        Debug.Log($"Coin in bag: {coinInBag}");
         yield return new WaitForSeconds(0.001f);
     }
-    private void OnCoinMoveComplete(Coin coin, Hole hole, ref bool isHoleActive)
+    private void OnCoinMoveComplete(Coin coin, Hole hole)
     {
         coin.JumpToHole(hole.pointToDropCoin, () =>
         {
             StartSetTrueCanClickHole(hole);
-        });
-
-        if (isHoleActive)
-        {
-            hole.ActivateBlenderShape(800);
-            hole.transform.DOScale(2.4f, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
+            if (!hole.isHoleActive)
             {
-                hole.transform.DOScale(2f, 0.5f).SetEase(Ease.OutBack);
-            });
-            hole.DeactivateBlenderShape(1000);
-
-            DropCoin(hole, coin.colorType);
-        }
-
-        isHoleActive = false;
+                hole.isHoleActive = true;
+                hole.transform.DOScale(1.8f, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
+                {
+                    hole.transform.DOScale(1.5f, 0.5f).SetEase(Ease.OutBack);
+                });
+                hole.ActivateBlenderShape(900);
+                hole.DeactivateBlenderShape(1300);
+                DropCoin(hole, coin.colorType);
+            }
+        });
     }
     public void MoveAlongTile(Coin coin, List<Tile> path, Action onComplete = null)
     {
@@ -141,30 +144,63 @@ public class GamePlay : MonoBehaviour
 
     public void DropCoin(Hole hole, ColorType col)
     {
+        PigRow pigRow = null;
+        PigRow pigRowNext = null;
         Pig pig = null;
-        foreach (var p in pigs)
+        for (int i = 0; i < rowPig.Count; i++)
+        {
+            if (rowPig[i].pigs.Count > 0)
+            {
+                pigRow = rowPig[i];
+                if (i < rowPig.Count - 1)
+                {
+                    pigRowNext = rowPig[i + 1];
+                }
+                break;
+            }
+        }
+        if (pigRow == null) return;
+        int[] index = new int[pigRow.pigs.Count];
+        Vector3 pigPos = Vector3.zero;
+        foreach (var p in pigRow.pigs)
         {
             if (p.colorType == hole.colorType)
             {
                 pig = p;
+                pigPos = p.gameObject.transform.position;
+                break;
             }
         }
         pig.coinBag.gameObject.SetActive(true);
         pig.dropParticle.SetActive(true);
         pig.ActivateCoinEyes();
-        int i = 32;
-        while (i >= 0)
+        int cnt = 32;
+        while (cnt >= 0)
         {
-            float delay = i * 0.05f;
+            float delay = cnt * 0.05f;
             pig.DropDelay(delay, col);
-            i--;
+            cnt--;
         }
+        //pig.transform.SetParent(null);
+        //Transform child = pigRowNext.transform.GetChild(index);
+        //child.SetParent(pigRow.transform);
+        //child.SetSiblingIndex(index);
+        pig.OnFullDelay();
+        index[0] = pigRow.pigs.IndexOf(pig);
+        pigRow.pigs[index[0]] = pigRowNext.pigs[index[0]];
+        StartCoroutine(MovePig(pigRowNext, index, pigPos));
         if (countCoin == GetAllTilesInGrid().Count)
         {
             PlayableManager.Instance.WinGame();
             countCoin = 0;
         }
-        pig.OnFullDelay();
     }
-
+    IEnumerator MovePig(PigRow pigRowNext, int[] index, Vector3 pigPos)
+    {
+        yield return new WaitForSeconds(2f);
+        if (pigRowNext.pigs[index[0]] != null)
+            pigRowNext.pigs[index[0]].transform.DOMove(pigPos, 0.5f).SetEase(Ease.OutBack);
+    }
 }
+
+

@@ -11,6 +11,7 @@ public class Hole : MonoBehaviour
 {
     public ColorType colorType;
     public Transform pointToDropCoin;
+    public bool isHoleActive;
     public bool canClick = true;
     [FormerlySerializedAs("meshRenderer")] public SkinnedMeshRenderer skinnedMeshRenderer;
     public List<Tile> tilesInHole = new List<Tile>();
@@ -26,9 +27,8 @@ public class Hole : MonoBehaviour
             {
                 if (hit.collider.transform == transform)
                 {
-                    transform.DOScale(1.8f, 0.1f)
-                     .OnComplete(() => transform.DOScale(2f, 0.05f));
-                    Debug.Log("111");
+                    transform.DOScale(1.25f, 0.1f)
+                     .OnComplete(() => transform.DOScale(1.5f, 0.05f));
                     Debug.Log(GamePlay.Instance);
                     if (canClick)
                         GamePlay.Instance.StartHoleMoneyGame(this);
@@ -49,13 +49,11 @@ public class Hole : MonoBehaviour
 
         skinnedMeshRenderer.SetBlendShapeWeight(0, 0);
         float weight = skinnedMeshRenderer.GetBlendShapeWeight(0);
-
         DOTween.To(() => weight, x => skinnedMeshRenderer.SetBlendShapeWeight(0, x), 100f, 0.25f)
-            .SetEase(Ease.InBack)
-            .OnComplete(() => skinnedMeshRenderer.SetBlendShapeWeight(0, 100));
+          .SetEase(Ease.InBack)
+          .OnComplete(() => skinnedMeshRenderer.SetBlendShapeWeight(0, 100));
+
     }
-
-
 
     public void DeactivateBlenderShape(int delayMs)
     {

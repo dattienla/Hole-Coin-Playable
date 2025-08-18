@@ -13,7 +13,10 @@ public class GamePlay : MonoBehaviour
 
     public List<Hole> holes = new List<Hole>();
 
-    public List<PigRow> rowPig = new List<PigRow>();
+    public List<PigRow> pigRows = new List<PigRow>();
+
+    public List<Pig> pigQs = new List<Pig>();
+    public List<Pig> pigQNexts = new List<Pig>();
 
     private readonly Dictionary<ColorType, int> tempCoins = new();
     private int countCoin = 0;
@@ -56,17 +59,17 @@ public class GamePlay : MonoBehaviour
                 hole.canClick = false;
                 GameObject obj = tile.childCoin;
                 Coin coin = obj.GetComponent<Coin>();
+                StartSetTrueCanClickHole(hole);
                 MoveAlongTile(coin, path, () => OnCoinMoveComplete(coin, hole));
             }
         }
-        Debug.Log($"Coin in bag: {coinInBag}");
+        DropCoin2(hole);
         yield return new WaitForSeconds(0.001f);
     }
     private void OnCoinMoveComplete(Coin coin, Hole hole)
     {
         coin.JumpToHole(hole.pointToDropCoin, () =>
         {
-            StartSetTrueCanClickHole(hole);
             if (!hole.isHoleActive)
             {
                 hole.isHoleActive = true;
@@ -76,7 +79,7 @@ public class GamePlay : MonoBehaviour
                 });
                 hole.ActivateBlenderShape(900);
                 hole.DeactivateBlenderShape(1300);
-                DropCoin(hole, coin.colorType);
+                StartCoroutine(DropCoin());
             }
         });
     }
@@ -142,64 +145,66 @@ public class GamePlay : MonoBehaviour
         return result;
     }
 
-    public void DropCoin(Hole hole, ColorType col)
+    IEnumerator DropCoin()
     {
-        PigRow pigRow = null;
-        PigRow pigRowNext = null;
-        Pig pig = null;
-        for (int i = 0; i < rowPig.Count; i++)
+        List<Pig> pigQCopy = new List<Pig>(pigQs);
+        foreach (var pigQ in pigQCopy)
         {
-            if (rowPig[i].pigs.Count > 0)
+            pigQ.coinBag.gameObject.SetActive(true);
+            pigQ.dropParticle.SetActive(true);
+            pigQ.ActivateCoinEyes();
+            pigQ.OnFullDelay();
+            int cnt = 32;
+            while (cnt >= 0)
             {
-                pigRow = rowPig[i];
-                if (i < rowPig.Count - 1)
-                {
-                    pigRowNext = rowPig[i + 1];
-                }
-                break;
+                float delay = cnt * 0.05f;
+                pigQ.DropDelay(delay, pigQ.colorType);
+                cnt--;
             }
+            pigQs.Remove(pigQ);
+            yield return new WaitForSeconds(0.5f);
         }
-        if (pigRow == null) return;
-        int[] index = new int[pigRow.pigs.Count];
-        Vector3 pigPos = Vector3.zero;
-        foreach (var p in pigRow.pigs)
+        List<Pig> pigQNextCopy = new List<Pig>(pigQNexts);
+        foreach (var pigQNext in pigQNextCopy)
         {
-            if (p.colorType == hole.colorType)
-            {
-                pig = p;
-                pigPos = p.gameObject.transform.position;
-                break;
-            }
+            Vector3 pos = pigQNext.transform.localPosition + new Vector3(0, 0, 7);
+            StartCoroutine(Move(pigQNext, pos));
+            pigQNexts.Remove(pigQNext);
         }
-        pig.coinBag.gameObject.SetActive(true);
-        pig.dropParticle.SetActive(true);
-        pig.ActivateCoinEyes();
-        int cnt = 32;
-        while (cnt >= 0)
-        {
-            float delay = cnt * 0.05f;
-            pig.DropDelay(delay, col);
-            cnt--;
-        }
-        //pig.transform.SetParent(null);
-        //Transform child = pigRowNext.transform.GetChild(index);
-        //child.SetParent(pigRow.transform);
-        //child.SetSiblingIndex(index);
-        pig.OnFullDelay();
-        index[0] = pigRow.pigs.IndexOf(pig);
-        pigRow.pigs[index[0]] = pigRowNext.pigs[index[0]];
-        StartCoroutine(MovePig(pigRowNext, index, pigPos));
         if (countCoin == GetAllTilesInGrid().Count)
         {
             PlayableManager.Instance.WinGame();
             countCoin = 0;
         }
     }
-    IEnumerator MovePig(PigRow pigRowNext, int[] index, Vector3 pigPos)
+    IEnumerator Move(Pig pig, Vector3 pos)
     {
-        yield return new WaitForSeconds(2f);
-        if (pigRowNext.pigs[index[0]] != null)
-            pigRowNext.pigs[index[0]].transform.DOMove(pigPos, 0.5f).SetEase(Ease.OutBack);
+        yield return new WaitForSeconds(1.5f);
+        if (pig != null) { pig.transform.DOLocalMove(pos, 0.8f).SetEase(Ease.OutBack); }
+    }
+    public void DropCoin2(Hole hole)
+    {
+        int k = 0;
+        while (coinInBag > 0 && k < 5)
+        {
+            for (int i = 0; i < pigRows.Count; i++)
+            {
+                PigRow pigRow = pigRows[i];
+                if (pigRow.pigs.Count == 0)
+                {
+                    continue;
+                }
+                Pig pig = pigRow.pigs[0];
+                if (pig.colorType == hole.colorType)
+                {
+                    coinInBag -= 32;
+                    pigRow.RemovePig(pig);
+                    break;
+                }
+            }
+            k++;
+        }
+
     }
 }
 

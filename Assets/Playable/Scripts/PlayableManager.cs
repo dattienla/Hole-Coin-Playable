@@ -129,6 +129,6 @@ public class PlayableManager : MonoBehaviour
     }
     public void WinGame()
     {
-        Invoke(nameof(WinGameDelay), 2.5f);
+        Invoke(nameof(WinGameDelay), 1.5f);
     }
 }

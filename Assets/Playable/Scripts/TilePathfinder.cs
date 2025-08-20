@@ -13,30 +13,7 @@ public class TilePathfinder : MonoBehaviour
     {
         Instance = this;
     }
-    private void Update()
-    {
-        List<Tile> path = FindShortestPath(tile, hole.targetTiles[UnityEngine.Random.Range(2, 3)], hole);
-        if (path != null)
-        {
-            Debug.Log("có đường đi");
-            foreach (Tile tile in path)
-            {
-                Debug.Log(tile.name);
-            }
-        }
-        else
-        {
-            Debug.Log("Không có đường đi");
-        }
-        foreach (Tile tile in tiles)
-        {
-            if (tile.childCoin != null)
-            {
-                Debug.Log(tile.childCoin.name);
-            }
-            Debug.Log(tile.isEmpty);
-        }
-    }
+
     private void Start()
     {
         allTiles = GamePlay.Instance.GetAllTilesInGrid();

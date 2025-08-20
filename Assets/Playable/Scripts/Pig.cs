@@ -14,6 +14,7 @@ using static UnityEditor.PlayerSettings;
 
 public class Pig : MonoBehaviour
 {
+    int count = 0;
     public ColorType colorType;
     public int maxCoinCount = 32;
     public TextMeshPro scoreText;
@@ -105,8 +106,6 @@ public class Pig : MonoBehaviour
         {
             GamePlay.Instance.pigQs.Remove(this);
             pigRowParent.pigs.Remove(this);
-            //  gameObject.SetActive(false);
-            //  Invoke("DestroyPig", 2f);
             coinBag.DeactivateBlenderShape(true);
             foreach (var pig in pigRowParent.pigs)
             {
@@ -121,6 +120,14 @@ public class Pig : MonoBehaviour
                     pos = pigRowParent.point - new Vector3(0, 0, 5f * index);
                 }
                 if (pig != null) { pig.transform.DOLocalMove(pos, 0.8f).SetEase(Ease.OutBack); }
+            }
+            foreach (var pigRow in GamePlay.Instance.pigRows)
+            {
+                if (pigRow.pigs.Count == 0) count++;
+            }
+            if (count == GamePlay.Instance.pigRows.Count)
+            {
+                PlayableManager.Instance.WinGame();
             }
 
         });

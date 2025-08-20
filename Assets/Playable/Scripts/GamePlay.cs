@@ -27,6 +27,10 @@ public class GamePlay : MonoBehaviour
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;   // Tắt VSync để Unity tự điều khiển FPS
     }
+    private void Update()
+    {
+
+    }
     private void StartSetTrueCanClickHole(Hole hole)
     {
         if (hole.canClick) return;
@@ -103,9 +107,10 @@ public class GamePlay : MonoBehaviour
         hole.isHoleActive = false;
         foreach (var tile in tileTrue)
         {
-            List<Tile> path = TilePathfinder.Instance.FindShortestPath(tile, hole.targetTiles[UnityEngine.Random.Range(2, 3)], hole);
+            List<Tile> path = TilePathfinder.Instance.FindShortestPath(tile, hole.targetTiles[UnityEngine.Random.Range(0, 3)], hole);
             if (path != null)
             {
+                tile.isEmptyAfterCoinMove = true;
                 coinInBag[hole.colorType]++;
                 PlayableManager.Instance.hand.SetActive(false);
                 holes[0].canClick = true;
@@ -114,6 +119,7 @@ public class GamePlay : MonoBehaviour
                 GameObject obj = tile.childCoin;
                 Coin coin = obj.GetComponent<Coin>();
                 StartSetTrueCanClickHole(hole);
+                StartSetTrueCanClickHole0(holes[0]);
                 MoveAlongTile(coin, path, () => OnCoinMoveComplete(coin, hole));
             }
         }
@@ -133,7 +139,7 @@ public class GamePlay : MonoBehaviour
                 });
                 hole.ActivateBlenderShape(900);
                 hole.DeactivateBlenderShape(1300);
-                //  StartCoroutine(DropCoin(hole));
+                StartCoroutine(DropCoin(hole));
             }
         });
     }
@@ -154,9 +160,7 @@ public class GamePlay : MonoBehaviour
 
             Vector3 target = tile.transform.position;
             Vector3 movePos = new Vector3(target.x, coin.transform.position.y, target.z);
-            tile.isEmptyAfterCoinMove = true;
             coin.smokeParticle.SetActive(true);
-
             coin.smokeParticle.SetActive(true);
             float duration = UnityEngine.Random.Range(0.04f, 0.08f);
             bool moveDone = false;
@@ -242,11 +246,6 @@ public class GamePlay : MonoBehaviour
                 }
             }
             yield return new WaitForSeconds(0.5f);
-            if (countCoin == GetAllTilesInGrid().Count)
-            {
-                PlayableManager.Instance.WinGame();
-                countCoin = 0;
-            }
         }
     }
     public IEnumerator Move(Pig pig, Vector3 pos)

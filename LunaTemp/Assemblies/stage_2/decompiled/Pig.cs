@@ -1,5 +1,6 @@
 using System.Linq;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -8,6 +9,8 @@ public class Pig : MonoBehaviour
 	public ColorType colorType;
 
 	public int maxCoinCount = 32;
+
+	public TextMeshPro scoreText;
 
 	public Transform positionToDropCoin;
 
@@ -47,6 +50,11 @@ public class Pig : MonoBehaviour
 		{
 			return;
 		}
+		if (maxCoinCount == 1)
+		{
+			AudioManager.Instance.audioSource.PlayOneShot(AudioManager.Instance.attendClip);
+		}
+		scoreText.text = maxCoinCount.ToString();
 		GameObject coinObjet = Object.Instantiate(coinPrefab, coinBag.spawnPoint.position, Quaternion.Euler(0f, 90f, 0f));
 		Coin coin = coinObjet.GetComponent<Coin>();
 		MainMaterials mat = materialsSo.mainMaterials.FirstOrDefault((MainMaterials t) => t.colorType == type);

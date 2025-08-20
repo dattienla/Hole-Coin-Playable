@@ -13,10 +13,10 @@ public class Tile : MonoBehaviour
         List<Tile> neighbors = new List<Tile>();
         Vector2Int[] directions = new Vector2Int[]
         {
-                Vector2Int.up,
-                Vector2Int.down,
-                Vector2Int.left,
-                Vector2Int.right
+        Vector2Int.up,
+        Vector2Int.down,
+        Vector2Int.left,
+        Vector2Int.right
         };
 
         foreach (var dir in directions)
@@ -32,11 +32,13 @@ public class Tile : MonoBehaviour
 
         return neighbors;
     }
+
     public bool IsInsideGrid(Vector2Int pos)
     {
         return pos.x >= 0 && pos.x < Grid.instance.rows.Count &&
-              pos.y >= 0 && pos.y < Grid.instance.rows[pos.x].tiles.Count;
+               pos.y >= 0 && pos.y < Grid.instance.rows[pos.x].tiles.Count;
     }
+
     public ColorType GetColorTile()
     {
         if (isEmpty) return ColorType.None;

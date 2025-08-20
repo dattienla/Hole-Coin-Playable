@@ -127,8 +127,8 @@ MonoBehaviour:
   m_Version: 1.1.0
   m_SourceFontFileGUID: 516c6b9056d4a13449aa338e08f4d28c
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 516c6b9056d4a13449aa338e08f4d28c, type: 3}
-  m_SourceFontFile: {fileID: 12800000, guid: 516c6b9056d4a13449aa338e08f4d28c, type: 3}
-  m_AtlasPopulationMode: 1
+  m_SourceFontFile: {fileID: 0}
+  m_AtlasPopulationMode: 0
   m_FaceInfo:
     m_FaceIndex: 0
     m_FamilyName: Lilita One
@@ -1804,7 +1804,7 @@ Texture2D:
   m_MipsStripped: 0
   m_TextureFormat: 1
   m_MipCount: 1
-  m_IsReadable: 1
+  m_IsReadable: 0
   m_IsPreProcessed: 0
   m_IgnoreMipmapLimit: 0
   m_MipmapLimitGroupName: 

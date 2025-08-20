@@ -49,15 +49,6 @@ namespace DG.Tweening
 						t = (isLocal ? rBody.DOLocalPath(path, duration, pathMode) : rBody.DOPath(path, duration, pathMode));
 					}
 				}
-				if (!rBodyFoundAndTweened && tweenRigidbody)
-				{
-					Rigidbody2D rBody2D = target.GetComponent<Rigidbody2D>();
-					if (rBody2D != null)
-					{
-						rBodyFoundAndTweened = true;
-						t = (isLocal ? rBody2D.DOLocalPath(path, duration, pathMode) : rBody2D.DOPath(path, duration, pathMode));
-					}
-				}
 				if (!rBodyFoundAndTweened)
 				{
 					t = (isLocal ? target.transform.DOLocalPath(path, duration, pathMode) : target.transform.DOPath(path, duration, pathMode));

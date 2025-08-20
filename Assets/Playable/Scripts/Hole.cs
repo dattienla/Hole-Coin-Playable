@@ -1,10 +1,13 @@
-﻿using DG.Tweening;
+﻿
+using DG.Tweening;
 using DG.Tweening.Core.Easing;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Serialization;
 using System.Threading.Tasks;
+using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using static Unity.VisualScripting.Dependencies.Sqlite.SQLite3;
 
 public class Hole : MonoBehaviour
@@ -13,6 +16,7 @@ public class Hole : MonoBehaviour
     public Transform pointToDropCoin;
     public bool isHoleActive;
     public bool canClick = true;
+    public AudioSource audioSource;
     [FormerlySerializedAs("meshRenderer")] public SkinnedMeshRenderer skinnedMeshRenderer;
     public List<Tile> tilesInHole = new List<Tile>();
     public List<Tile> targetTiles = new List<Tile>();
@@ -27,9 +31,11 @@ public class Hole : MonoBehaviour
             {
                 if (hit.collider.transform == transform)
                 {
+
+                    //HapticFeedbackController.TriggerHaptics(HapticPatterns.PresetType.Success);
+                    audioSource.Play();
                     transform.DOScale(1.25f, 0.1f)
                      .OnComplete(() => transform.DOScale(1.5f, 0.05f));
-                    Debug.Log(GamePlay.Instance);
                     if (canClick)
                         GamePlay.Instance.StartHoleMoneyGame(this);
 
@@ -76,11 +82,9 @@ public class Hole : MonoBehaviour
             .SetEase(Ease.InBack)
             .OnComplete(() =>
             {
+                isHoleActive = false;
                 // Đảm bảo weight cuối cùng chính xác = 0
                 skinnedMeshRenderer.SetBlendShapeWeight(0, 0);
             });
     }
-
-
-
 }

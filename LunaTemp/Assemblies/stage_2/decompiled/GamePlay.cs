@@ -10,11 +10,17 @@ public class GamePlay : MonoBehaviour
 
 	public List<Hole> holes = new List<Hole>();
 
-	public List<Pig> pigs = new List<Pig>();
+	public List<PigRow> pigRows = new List<PigRow>();
 
-	private readonly Dictionary<ColorType, int> tempCoins = new Dictionary<ColorType, int>();
+	public List<Pig> pigQs = new List<Pig>();
+
+	public List<Pig> pigQNexts = new List<Pig>();
 
 	private int countCoin = 0;
+
+	private int coinInBag = 0;
+
+	private bool canClickHole0 = false;
 
 	private void Awake()
 	{
@@ -33,8 +39,41 @@ public class GamePlay : MonoBehaviour
 
 	private IEnumerator SetTrueCanClickHole(Hole hole)
 	{
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(0.1f);
 		hole.canClick = true;
+	}
+
+	private void StartSetTrueCanClickHole0(Hole hole)
+	{
+		if (!hole.canClick)
+		{
+			StartCoroutine(SetTrueCanClickHole0(hole));
+		}
+	}
+
+	private IEnumerator SetTrueCanClickHole0(Hole hole)
+	{
+		if (!canClickHole0)
+		{
+			yield return new WaitForSeconds(1.2f);
+			PlayableManager.Instance.hand.SetActive(true);
+			PlayableManager.Instance.hand.GetComponent<RectTransform>().anchoredPosition = new Vector2(-33f, (float)(-Screen.height) * 2f);
+			CanvasGroup handCG = PlayableManager.Instance.hand.GetComponent<CanvasGroup>();
+			handCG.alpha = 0f;
+			DOTween.To(() => handCG.alpha, delegate(float x)
+			{
+				handCG.alpha = x;
+			}, 1f, 0.5f).SetEase(Ease.InOutQuad);
+			yield return new WaitForSeconds(0.4f);
+			RectTransform handRT = PlayableManager.Instance.hand.GetComponent<RectTransform>();
+			DOTween.To(() => handRT.anchoredPosition, delegate(Vector2 x)
+			{
+				handRT.anchoredPosition = x;
+			}, new Vector2(-33f, -220f), 0.5f).SetEase(Ease.OutCubic);
+			yield return new WaitForSeconds(0.2f);
+			hole.canClick = true;
+			canClickHole0 = true;
+		}
 	}
 
 	public void StartHoleMoneyGame(Hole hole)
@@ -44,42 +83,47 @@ public class GamePlay : MonoBehaviour
 
 	private IEnumerator ProcessHole(Hole hole)
 	{
-		bool isHoleActive = true;
+		coinInBag = 0;
 		foreach (Tile tile in GetAllTilesInGrid())
 		{
-			List<Tile> path = TilePathfinder.Instance.FindShortestPath(tile, hole.targetTiles[UnityEngine.Random.Range(0, 7)], hole);
+			List<Tile> path = TilePathfinder.Instance.FindShortestPath(tile, hole.targetTiles[UnityEngine.Random.Range(0, 3)], hole);
 			if (path != null)
 			{
+				coinInBag++;
+				PlayableManager.Instance.hand.SetActive(false);
+				StartSetTrueCanClickHole0(holes[0]);
 				countCoin++;
 				hole.canClick = false;
 				GameObject obj = tile.childCoin;
 				Coin coin = obj.GetComponent<Coin>();
+				StartSetTrueCanClickHole(hole);
 				MoveAlongTile(coin, path, delegate
 				{
-					OnCoinMoveComplete(coin, hole, ref isHoleActive);
+					OnCoinMoveComplete(coin, hole);
 				});
 			}
 		}
+		DropCoin2(hole);
 		yield return new WaitForSeconds(0.001f);
 	}
 
-	private void OnCoinMoveComplete(Coin coin, Hole hole, ref bool isHoleActive)
+	private void OnCoinMoveComplete(Coin coin, Hole hole)
 	{
 		coin.JumpToHole(hole.pointToDropCoin, delegate
 		{
-			StartSetTrueCanClickHole(hole);
-		});
-		if (isHoleActive)
-		{
-			hole.ActivateBlenderShape(800);
-			hole.transform.DOScale(2.4f, 0.5f).SetEase(Ease.OutBack).OnComplete(delegate
+			if (!hole.isHoleActive)
 			{
-				hole.transform.DOScale(2f, 0.5f).SetEase(Ease.OutBack);
-			});
-			hole.DeactivateBlenderShape(1000);
-			DropCoin(hole, coin.colorType);
-		}
-		isHoleActive = false;
+				hole.isHoleActive = true;
+				AudioManager.Instance.audioSource.PlayOneShot(AudioManager.Instance.coinAndMoneyBagClip);
+				hole.transform.DOScale(1.8f, 0.5f).SetEase(Ease.OutBack).OnComplete(delegate
+				{
+					hole.transform.DOScale(1.5f, 0.5f).SetEase(Ease.OutBack);
+				});
+				hole.ActivateBlenderShape(900);
+				hole.DeactivateBlenderShape(1300);
+				StartCoroutine(DropCoin());
+			}
+		});
 	}
 
 	public void MoveAlongTile(Coin coin, List<Tile> path, Action onComplete = null)
@@ -136,29 +180,66 @@ public class GamePlay : MonoBehaviour
 		return result;
 	}
 
-	public void DropCoin(Hole hole, ColorType col)
+	private IEnumerator DropCoin()
 	{
-		Pig pig = null;
-		foreach (Pig p in pigs)
+		List<Pig> pigQCopy = new List<Pig>(pigQs);
+		foreach (Pig pigQ in pigQCopy)
 		{
-			if (p.colorType == hole.colorType)
+			pigQ.coinBag.gameObject.SetActive(true);
+			pigQ.dropParticle.SetActive(true);
+			pigQ.ActivateCoinEyes();
+			pigQ.OnFullDelay();
+			for (int cnt = 32; cnt > 0; cnt--)
 			{
-				pig = p;
+				float delay = (float)cnt * 0.05f;
+				pigQ.DropDelay(delay, pigQ.colorType);
 			}
+			pigQs.Remove(pigQ);
+			yield return new WaitForSeconds(0.5f);
 		}
-		pig.coinBag.gameObject.SetActive(true);
-		pig.dropParticle.SetActive(true);
-		pig.ActivateCoinEyes();
-		for (int i = 32; i >= 0; i--)
+		List<Pig> pigQNextCopy = new List<Pig>(pigQNexts);
+		foreach (Pig pigQNext in pigQNextCopy)
 		{
-			float delay = (float)i * 0.05f;
-			pig.DropDelay(delay, col);
+			Vector3 pos = pigQNext.transform.localPosition + new Vector3(0f, 0f, 7f);
+			StartCoroutine(Move(pigQNext, pos));
+			pigQNexts.Remove(pigQNext);
 		}
 		if (countCoin == GetAllTilesInGrid().Count)
 		{
 			PlayableManager.Instance.WinGame();
 			countCoin = 0;
 		}
-		pig.OnFullDelay();
+	}
+
+	private IEnumerator Move(Pig pig, Vector3 pos)
+	{
+		yield return new WaitForSeconds(1.3f);
+		if (pig != null)
+		{
+			pig.transform.DOLocalMove(pos, 0.5f).SetEase(Ease.OutBack);
+		}
+	}
+
+	public void DropCoin2(Hole hole)
+	{
+		int j = 0;
+		while (coinInBag > 0 && j < 5)
+		{
+			for (int i = 0; i < pigRows.Count; i++)
+			{
+				PigRow pigRow = pigRows[i];
+				if (pigRow.pigs.Count != 0)
+				{
+					Pig pig = pigRow.pigs[0];
+					if (pig.colorType == hole.colorType)
+					{
+						coinInBag -= 32;
+						pigRow.RemovePig(pig);
+						break;
+					}
+				}
+			}
+			j++;
+		}
 	}
 }

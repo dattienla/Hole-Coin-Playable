@@ -6,9 +6,36 @@ public class TilePathfinder : MonoBehaviour
 {
     public static TilePathfinder Instance;
     List<Tile> allTiles = new List<Tile>();
+    public Tile tile;
+    public Hole hole;
+    public List<Tile> tiles = new List<Tile>();
     private void Awake()
     {
         Instance = this;
+    }
+    private void Update()
+    {
+        List<Tile> path = FindShortestPath(tile, hole.targetTiles[UnityEngine.Random.Range(2, 3)], hole);
+        if (path != null)
+        {
+            Debug.Log("có đường đi");
+            foreach (Tile tile in path)
+            {
+                Debug.Log(tile.name);
+            }
+        }
+        else
+        {
+            Debug.Log("Không có đường đi");
+        }
+        foreach (Tile tile in tiles)
+        {
+            if (tile.childCoin != null)
+            {
+                Debug.Log(tile.childCoin.name);
+            }
+            Debug.Log(tile.isEmpty);
+        }
     }
     private void Start()
     {
@@ -36,12 +63,15 @@ public class TilePathfinder : MonoBehaviour
                 {
                     return ReconstructPath(cameFrom, target);
                 }
-
                 foreach (Tile neighbor in current.GetNeighbors())
                 {
                     if (!allTiles.Contains(neighbor))
                     {
-                        if (!hole.tilesInHole.Contains(neighbor)) continue;
+
+                        if (!hole.tilesInHole.Contains(neighbor))
+                        {
+                            continue;
+                        }
                     }
                     if (visited.Contains(neighbor)) continue;
 

@@ -1,18 +1,22 @@
+
 using DG.Tweening;
 using DG.Tweening.Core.Easing;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-using System;
+using static UnityEditor.PlayerSettings;
 
 
 public class Pig : MonoBehaviour
 {
     public ColorType colorType;
     public int maxCoinCount = 32;
+    public TextMeshPro scoreText;
     public Transform positionToDropCoin;
     public Transform endPoint;
     public bool isDropping = false;
@@ -40,6 +44,12 @@ public class Pig : MonoBehaviour
         {
             return;
         }
+        else if (maxCoinCount == 1)
+        {
+            AudioManager.Instance.audioSource.PlayOneShot(AudioManager.Instance.attendClip);
+        }
+        scoreText.text = (maxCoinCount - 1).ToString();
+        //HapticFeedbackController.TriggerHaptics(HapticPatterns.PresetType.Success);
         var coinObjet = Instantiate(coinPrefab, coinBag.spawnPoint.position, Quaternion.Euler(0, 90f, 0));
         var coin = coinObjet.GetComponent<Coin>();
         var mat = materialsSo.mainMaterials.FirstOrDefault(t => t.colorType == type);
@@ -49,9 +59,7 @@ public class Pig : MonoBehaviour
             coin.meshRenderer.material = mat.coinMaterial;
         }
         coin.transform.SetParent(transform);
-        //coin.ResetCoin();
         coinObjet.transform.localRotation = Quaternion.Euler(45, 0f, 0);
-
         maxCoinCount--;
         coin.audioSource.Play();
         Vector3 start = coin.transform.position;
@@ -88,19 +96,43 @@ public class Pig : MonoBehaviour
     }
     public void OnFull()
     {
+        PigRow pigRowParent = transform.parent.GetComponent<PigRow>();
         skinnedMeshRenderer.SetBlendShapeWeight(0, 100f);
         GameObject c = Instantiate(confettiPrefab,
                     transform.position + Vector3.up * 3 - Vector3.back * 2, Quaternion.Euler(-90, 0, 0));
         c.SetActive(true);
         transform.DOScale(0, 0.75f).SetEase(Ease.InBack).OnComplete(() =>
         {
-            Destroy(gameObject);
+            GamePlay.Instance.pigQs.Remove(this);
+            pigRowParent.pigs.Remove(this);
+            //  gameObject.SetActive(false);
+            //  Invoke("DestroyPig", 2f);
             coinBag.DeactivateBlenderShape(true);
+            foreach (var pig in pigRowParent.pigs)
+            {
+                int index = pigRowParent.pigs.IndexOf(pig);
+                Vector3 pos = Vector3.zero;
+                if (index == 0)
+                {
+                    pos = pigRowParent.point;
+                }
+                else
+                {
+                    pos = pigRowParent.point - new Vector3(0, 0, 5f * index);
+                }
+                if (pig != null) { pig.transform.DOLocalMove(pos, 0.8f).SetEase(Ease.OutBack); }
+            }
+
         });
+
     }
     public void OnFullDelay()
     {
         Invoke(nameof(OnFull), 1f);
+    }
+    private void DestroyPig()
+    {
+        Destroy(gameObject);
     }
 
     public void ActivateBlenderShape()

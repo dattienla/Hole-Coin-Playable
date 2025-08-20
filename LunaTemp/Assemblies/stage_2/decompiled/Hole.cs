@@ -10,7 +10,11 @@ public class Hole : MonoBehaviour
 
 	public Transform pointToDropCoin;
 
+	public bool isHoleActive;
+
 	public bool canClick = true;
+
+	public AudioSource audioSource;
 
 	[FormerlySerializedAs("meshRenderer")]
 	public SkinnedMeshRenderer skinnedMeshRenderer;
@@ -28,12 +32,11 @@ public class Hole : MonoBehaviour
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		if (Physics.Raycast(ray, out var hit) && hit.collider.transform == base.transform)
 		{
-			base.transform.DOScale(1.8f, 0.1f).OnComplete(delegate
+			audioSource.Play();
+			base.transform.DOScale(1.25f, 0.1f).OnComplete(delegate
 			{
-				base.transform.DOScale(2f, 0.05f);
+				base.transform.DOScale(1.5f, 0.05f);
 			});
-			Debug.Log("111");
-			Debug.Log(GamePlay.Instance);
 			if (canClick)
 			{
 				GamePlay.Instance.StartHoleMoneyGame(this);
@@ -80,6 +83,7 @@ public class Hole : MonoBehaviour
 				skinnedMeshRenderer.SetBlendShapeWeight(0, x);
 			}, 0f, 0.25f).SetEase(Ease.InBack).OnComplete(delegate
 			{
+				isHoleActive = false;
 				skinnedMeshRenderer.SetBlendShapeWeight(0, 0f);
 			});
 		}

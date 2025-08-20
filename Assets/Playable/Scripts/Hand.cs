@@ -8,6 +8,6 @@ public class Hand : MonoBehaviour
     // Start is called before the first frame update
     public void OnEnable()
     {
-        transform.DOScale(0.8f, 1f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
+        transform.DOScale(0.8f, 0.6f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
     }
 }
